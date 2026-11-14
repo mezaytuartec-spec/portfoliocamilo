@@ -1,14 +1,11 @@
 "use client"
 
 import * as React from "react"
-import { Play, Volume2 } from "lucide-react"
 import { LiquidMetalButton } from "@/components/ui/liquid-metal-button"
 import { LiquidButton } from "@/components/ui/liquid-glass-button"
-import { PROJECTS, UI } from "@/lib/content"
+import { UI } from "@/lib/content"
 import { useSite } from "./providers"
 import { scrollToId } from "./nav"
-import { usePreview } from "./video"
-import { cn } from "@/lib/utils"
 
 export function Hero() {
   const { t } = useSite()
@@ -50,98 +47,14 @@ export function Hero() {
         </div>
       </div>
 
-      {/* horizon + reel */}
-      <div className="relative mt-32 md:mt-44">
-        <div className="horizon -z-10 top-[-70px] md:top-[-130px]" aria-hidden />
-        <div className="rise relative mx-auto max-w-5xl px-4" style={{ ["--d" as string]: "320ms" }}>
-          <Reel />
-        </div>
-        <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-24 bg-gradient-to-b md:block from-transparent to-[#07070a]" />
+      {/* glowing horizon closing the hero */}
+      <div aria-hidden className="relative mt-20 h-[200px] [clip-path:inset(-100vh_0_0_0)] md:mt-28 md:h-[300px]">
+        <div className="horizon -z-10 top-[70px] md:top-[110px]" />
+        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-b from-transparent to-[#07070a]" />
       </div>
 
       <Marquee />
     </section>
-  )
-}
-
-function Reel() {
-  const { t, play, lite, modalOpen } = useSite()
-  const [i, setI] = React.useState(0)
-  const [progress, setProgress] = React.useState(0)
-  const ref = React.useRef<HTMLVideoElement>(null)
-  const p = PROJECTS[i]
-  usePreview(ref, { src: p.video, enabled: !lite, paused: modalOpen })
-
-  const pick = (k: number) => {
-    setI(k)
-    setProgress(0)
-  }
-
-  return (
-    <div className="relative">
-      <div aria-hidden className="absolute -inset-x-10 -top-10 -bottom-4 -z-10 rounded-[40px] bg-[radial-gradient(60%_60%_at_50%_40%,rgba(139,108,255,.35),transparent)] blur-2xl" />
-      <div className="overflow-hidden rounded-[22px] border border-white/10 bg-[#0d0d11]/90 p-1.5 shadow-[0_50px_140px_-30px_rgba(0,0,0,.9),inset_0_1px_0_rgba(255,255,255,.08)]">
-        {/* window chrome */}
-        <div className="flex items-center gap-3 px-3 pt-1.5 pb-2.5">
-          <div className="flex gap-1.5">
-            <span className="size-2.5 rounded-full bg-white/15" />
-            <span className="size-2.5 rounded-full bg-white/15" />
-            <span className="size-2.5 rounded-full bg-white/15" />
-          </div>
-          <div className="flex flex-1 items-center gap-1 overflow-x-auto [scrollbar-width:none]">
-            {PROJECTS.map((pr, k) => (
-              <button
-                key={pr.id}
-                onClick={() => pick(k)}
-                className={cn(
-                  "relative flex shrink-0 cursor-pointer items-center gap-2 overflow-hidden rounded-lg px-3 py-1.5 text-[12px] transition-colors",
-                  k === i ? "bg-white/[0.08] text-white" : "text-white/45 hover:text-white/80",
-                )}
-              >
-                <span className="size-1.5 rounded-full" style={{ background: pr.accent, opacity: k === i ? 1 : 0.5 }} />
-                {pr.name}
-                {k === i && !lite && (
-                  <span
-                    aria-hidden
-                    className="absolute inset-x-0 bottom-0 h-px origin-left transition-transform duration-300 ease-linear"
-                    style={{ background: pr.accent, transform: `scaleX(${progress})` }}
-                  />
-                )}
-              </button>
-            ))}
-          </div>
-          <span className="hidden font-mono text-[10px] tracking-widest text-white/35 uppercase sm:block">Showreel</span>
-        </div>
-
-        {/* video */}
-        <button
-          onClick={() => play(p.id)}
-          className="group relative block aspect-video w-full cursor-pointer overflow-hidden rounded-[16px] bg-[#f4f4f5]"
-          aria-label={`${t(UI.work.play)} — ${p.name}`}
-        >
-          <video
-            ref={ref}
-            key={p.id}
-            src={p.video}
-            poster={p.poster}
-            muted
-            playsInline
-            preload="none"
-            onTimeUpdate={(e) => setProgress(e.currentTarget.currentTime / (e.currentTarget.duration || 30))}
-            onEnded={() => pick((i + 1) % PROJECTS.length)}
-            className="h-full w-full object-cover"
-          />
-          <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-          <span className="absolute bottom-4 left-4 flex items-center gap-2 rounded-full bg-black/70 py-2 pr-4 pl-2.5 text-[12px] font-medium text-white opacity-0 transition-all duration-500 group-hover:opacity-100 md:translate-y-2 md:group-hover:translate-y-0">
-            <span className="grid size-6 place-items-center rounded-full bg-white text-black">
-              <Play className="size-3 fill-current" />
-            </span>
-            {t(UI.work.play)}
-            <Volume2 className="size-3.5 text-white/60" />
-          </span>
-        </button>
-      </div>
-    </div>
   )
 }
 
