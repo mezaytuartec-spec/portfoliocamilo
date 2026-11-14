@@ -26,7 +26,7 @@ export function Hero() {
           {t(UI.hero.available)}
         </div>
 
-        <h1 className="rise font-display mt-7 text-[clamp(2.6rem,7.4vw,6.2rem)] leading-[0.98] font-medium" style={{ ["--d" as string]: "80ms" }}>
+        <h1 className="rise font-display mt-7 text-[clamp(2rem,7.4vw,6.2rem)] leading-[0.98] font-medium" style={{ ["--d" as string]: "80ms" }}>
           <span className="text-white/45">{t(UI.hero.hello)}</span>
           <br />
           {t(UI.hero.titleA)}{" "}

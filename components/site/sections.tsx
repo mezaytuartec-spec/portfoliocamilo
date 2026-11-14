@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { ArrowUpRight, Play, Rocket, MousePointerClick, Smartphone, MessageCircle, Copy, Check, ArrowUp } from "lucide-react"
+import { ArrowUpRight, ChevronDown, Play, Rocket, MousePointerClick, Smartphone, MessageCircle, Copy, Check, ArrowUp } from "lucide-react"
 import { PeekBlob } from "@/components/ui/peek-blob"
 import { LiquidButton } from "@/components/ui/liquid-glass-button"
 import { LiquidMetalButton } from "@/components/ui/liquid-metal-button"
@@ -132,7 +132,10 @@ function ProjectCase({ p }: { p: Project }) {
             preload="none"
             className="h-full w-full object-cover transition-transform duration-[1.4s] ease-[cubic-bezier(.2,.8,.2,1)] group-hover:scale-[1.025]"
           />
-          <span className="absolute inset-0 grid place-items-center">
+          <span aria-hidden className="absolute bottom-3 left-3 grid size-9 place-items-center rounded-full bg-black/70 text-white backdrop-blur-md md:hidden">
+            <Play className="size-3.5 fill-current" />
+          </span>
+          <span className="absolute inset-0 hidden place-items-center md:grid">
             <span className="flex items-center gap-2.5 rounded-full bg-black/75 py-2.5 pr-5 pl-2.5 text-sm font-medium text-white opacity-0 shadow-2xl backdrop-blur-md transition-all duration-500 group-hover:scale-100 group-hover:opacity-100 md:scale-90">
               <span className="grid size-8 place-items-center rounded-full bg-white text-black">
                 <Play className="size-3.5 fill-current" />
@@ -143,7 +146,7 @@ function ProjectCase({ p }: { p: Project }) {
         </button>
       </div>
 
-      <div className="mt-10 grid gap-10 md:grid-cols-12 md:gap-8">
+      <div className="mt-8 grid gap-8 md:mt-10 md:grid-cols-12">
         <div className="reveal md:col-span-5">
           <p className="text-xl leading-snug font-medium tracking-tight text-white/90 md:text-2xl">{t(p.summary)}</p>
           <div className="mt-6 flex flex-wrap gap-1.5">
@@ -153,15 +156,26 @@ function ProjectCase({ p }: { p: Project }) {
               </span>
             ))}
           </div>
-          <button
-            onClick={() => play(p.id)}
-            className="mt-7 inline-flex cursor-pointer items-center gap-2 text-sm text-white/80 transition hover:text-white"
-          >
-            {t(UI.work.play)} <ArrowUpRight className="size-4" />
-          </button>
+          <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 md:mt-7">
+            <button
+              onClick={() => play(p.id)}
+              className="inline-flex cursor-pointer items-center gap-2 text-sm text-white/80 transition hover:text-white"
+            >
+              {t(UI.work.play)} <ArrowUpRight className="size-4" />
+            </button>
+            {/* on phones the case notes stay folded until asked for */}
+            <button
+              onClick={() => setOpen((o) => !o)}
+              aria-expanded={open}
+              className="inline-flex cursor-pointer items-center gap-1.5 text-sm text-white/50 transition hover:text-white md:hidden"
+            >
+              {open ? t(UI.work.caseClose) : t(UI.work.caseOpen)}
+              <ChevronDown className={cn("size-4 transition-transform", open && "rotate-180")} />
+            </button>
+          </div>
         </div>
 
-        <div className="reveal space-y-7 md:col-span-7" style={{ ["--d" as string]: "120ms" }}>
+        <div className={cn("reveal space-y-7 md:col-span-7", !open && "max-md:hidden")} style={{ ["--d" as string]: "120ms" }}>
           <div>
             <h4 className="mb-2.5 font-mono text-[10.5px] tracking-[0.16em] text-white/40 uppercase">{t(UI.work.challenge)}</h4>
             <p className="text-[15px] leading-relaxed text-white/75">{t(p.challenge)}</p>
@@ -174,7 +188,7 @@ function ProjectCase({ p }: { p: Project }) {
             </div>
             <button
               onClick={() => setOpen((o) => !o)}
-              className="mt-2 cursor-pointer text-[13px] text-white/50 underline-offset-4 transition hover:text-white hover:underline"
+              className="mt-2 hidden cursor-pointer text-[13px] text-white/50 underline-offset-4 transition hover:text-white hover:underline md:inline"
               aria-expanded={open}
             >
               {open ? t(UI.work.readLess) : t(UI.work.readMore)}
@@ -210,7 +224,7 @@ export function Services() {
             return (
               <div
                 key={k}
-                className="reveal group relative overflow-hidden rounded-2xl p-6 glass transition-colors duration-500 hover:bg-white/[0.06]"
+                className="reveal group relative overflow-hidden rounded-2xl p-5 glass md:p-6 transition-colors duration-500 hover:bg-white/[0.06]"
                 style={{ ["--d" as string]: `${k * 90}ms` }}
               >
                 <div
@@ -221,7 +235,7 @@ export function Services() {
                 <span className="grid size-10 place-items-center rounded-xl bg-gradient-to-b from-white/15 to-white/[0.03] ring-hairline">
                   <Icon className="size-[18px] text-white/85" />
                 </span>
-                <h3 className="mt-10 text-lg font-medium tracking-tight">{t(s.t)}</h3>
+                <h3 className="mt-5 text-lg font-medium tracking-tight md:mt-10">{t(s.t)}</h3>
                 <p className="mt-2 text-[14px] leading-relaxed text-white/55">{t(s.d)}</p>
               </div>
             )
@@ -236,8 +250,16 @@ export function Services() {
 /* Contact                                                             */
 /* ------------------------------------------------------------------ */
 
+const phoneQuery = () => window.matchMedia("(max-width: 767px)")
+const onPhoneChange = (cb: () => void) => {
+  const mq = phoneQuery()
+  mq.addEventListener("change", cb)
+  return () => mq.removeEventListener("change", cb)
+}
+
 export function Contact() {
   const { t } = useSite()
+  const phone = React.useSyncExternalStore(onPhoneChange, () => phoneQuery().matches, () => false)
   const [copied, setCopied] = React.useState(false)
 
   const copy = async () => {
@@ -262,7 +284,7 @@ export function Contact() {
             energy={0.55}
             floor={0.08}
             edgeSoftness={4}
-            aberration={0.3}
+            aberration={phone ? 0 : 0.3}
             ariaLabel="Camilo Meza Ytuarte"
             style={{ width: "100%", height: "100%", minHeight: 0, aspectRatio: "auto" }}
           />

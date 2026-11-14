@@ -137,7 +137,7 @@ export const UI = {
     hello: { es: "Hola, soy Camilo.", en: "Hi, I’m Camilo." },
     titleA: { es: "Hago", en: "I do" },
     titleEm: { es: "motion design", en: "motion design" },
-    titleB: { es: "para empresas SaaS.", en: "for SaaS companies." },
+    titleB: { es: "para empresas SaaS.", en: "for SaaS companies." },
     sub: {
       es: "Videos de lanzamiento, animación de producto y piezas para redes. Acá te dejo algunos de mis trabajos recientes.",
       en: "Launch videos, product animation and social cuts. Here are some of my recent projects.",
@@ -161,6 +161,8 @@ export const UI = {
     play: { es: "Ver con sonido", en: "Watch with sound" },
     readMore: { es: "Leer más", en: "Read more" },
     readLess: { es: "Leer menos", en: "Read less" },
+    caseOpen: { es: "Leer el caso", en: "Read the case" },
+    caseClose: { es: "Ocultar el caso", en: "Hide the case" },
     more: { es: "¿Querés ver más trabajos?", en: "Want to see more work?" },
     moreCta: { es: "Pedímelos", en: "Ask me" },
   },
