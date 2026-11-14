@@ -21,7 +21,6 @@ export type Project = {
   credits: T
   tags: string[]
   video: string
-  preview: string
   poster: string
 }
 
@@ -62,7 +61,6 @@ export const PROJECTS: Project[] = [
     credits: credits(),
     tags: ["2026", "30s", "16:9 · 9:16 · 1:1"],
     video: "/work/peec.mp4",
-    preview: "/work/peec-preview.mp4",
     poster: "/work/peec.webp",
   },
   {
@@ -90,7 +88,6 @@ export const PROJECTS: Project[] = [
     credits: credits(),
     tags: ["2026", "30s", "16:9 · 9:16 · 1:1"],
     video: "/work/mico.mp4",
-    preview: "/work/mico-preview.mp4",
     poster: "/work/mico.webp",
   },
   {
@@ -121,7 +118,6 @@ export const PROJECTS: Project[] = [
     }),
     tags: ["2026", "30s", "16:9 · 9:16 · 1:1"],
     video: "/work/palette.mp4",
-    preview: "/work/palette-preview.mp4",
     poster: "/work/palette.webp",
   },
 ]

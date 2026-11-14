@@ -70,7 +70,7 @@ function Reel() {
   const [progress, setProgress] = React.useState(0)
   const ref = React.useRef<HTMLVideoElement>(null)
   const p = PROJECTS[i]
-  usePreview(ref, { src: p.preview, enabled: !lite, paused: modalOpen })
+  usePreview(ref, { src: p.video, enabled: !lite, paused: modalOpen })
 
   const pick = (k: number) => {
     setI(k)
@@ -122,7 +122,7 @@ function Reel() {
           <video
             ref={ref}
             key={p.id}
-            src={p.preview}
+            src={p.video}
             poster={p.poster}
             muted
             playsInline

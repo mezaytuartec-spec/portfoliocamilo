@@ -86,7 +86,7 @@ function ProjectCase({ p }: { p: Project }) {
   const { t, play, lite, modalOpen } = useSite()
   const videoRef = React.useRef<HTMLVideoElement>(null)
   const [open, setOpen] = React.useState(false)
-  usePreview(videoRef, { src: p.preview, enabled: !lite, paused: modalOpen })
+  usePreview(videoRef, { src: p.video, enabled: !lite, paused: modalOpen })
 
   return (
     <article id={`case-${p.id}`} className="relative scroll-mt-24">
@@ -111,7 +111,7 @@ function ProjectCase({ p }: { p: Project }) {
         >
           <video
             ref={videoRef}
-            src={p.preview}
+            src={p.video}
             poster={p.poster}
             muted
             loop
