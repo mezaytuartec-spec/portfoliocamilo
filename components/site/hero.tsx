@@ -48,9 +48,9 @@ export function Hero() {
       </div>
 
       {/* glowing horizon closing the hero */}
-      <div aria-hidden className="relative mt-20 h-[200px] [clip-path:inset(-100vh_0_0_0)] md:mt-28 md:h-[300px]">
+      <div aria-hidden className="relative mt-20 h-[200px] [clip-path:inset(-100vh_0_2px_0)] md:mt-28 md:h-[300px]">
         <div className="horizon -z-10 top-[70px] md:top-[110px]" />
-        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-b from-transparent to-[#07070a]" />
+        <div className="absolute inset-x-0 bottom-0 h-3/4 bg-[linear-gradient(to_bottom,transparent,#07070a_75%)]" />
       </div>
 
       <Marquee />
@@ -63,7 +63,7 @@ function Marquee() {
   const items = UI.marquee[lang]
   const row = [...items, ...items, ...items, ...items]
   return (
-    <div className="relative mt-6 overflow-hidden border-y border-white/[0.06] py-5 [mask-image:linear-gradient(90deg,transparent,black_15%,black_85%,transparent)]">
+    <div className="relative mt-2 overflow-hidden py-5 [mask-image:linear-gradient(90deg,transparent,black_15%,black_85%,transparent)]">
       <div className="marquee flex w-max gap-10 font-mono text-[11px] tracking-[0.2em] text-white/35 uppercase">
         {row.map((s, k) => (
           <span key={k} className="flex items-center gap-10">

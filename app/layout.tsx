@@ -20,6 +20,7 @@ export const metadata: Metadata = {
     title: "Camilo Meza Ytuarte — Motion design for SaaS",
     description: "Launch videos and product animation for SaaS companies.",
   },
+  twitter: { card: "summary_large_image" },
 }
 
 export const viewport: Viewport = { themeColor: "#07070a" }
