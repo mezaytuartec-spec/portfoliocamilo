@@ -8,7 +8,7 @@ export default function Home() {
     <SiteProvider>
       <RevealObserver />
       <Nav />
-      <main className="grain relative">
+      <main className="relative">
         <Hero />
         <Work />
         <Services />

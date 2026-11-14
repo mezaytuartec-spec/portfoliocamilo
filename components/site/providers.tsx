@@ -3,6 +3,7 @@
 import * as React from "react"
 import { X } from "lucide-react"
 import { GlassFilter } from "@/components/ui/liquid-glass-button"
+import { Player } from "./video"
 import { PROJECTS, UI, type Lang, type Project, type T } from "@/lib/content"
 
 type Ctx = {
@@ -12,6 +13,8 @@ type Ctx = {
   play: (id: Project["id"]) => void
   /** Slow connection or data saver: show posters instead of autoplaying previews. */
   lite: boolean
+  /** True while the full player is open; previews pause so it gets the whole machine. */
+  modalOpen: boolean
 }
 
 const SiteContext = React.createContext<Ctx | null>(null)
@@ -72,7 +75,8 @@ export function SiteProvider({ children }: { children: React.ReactNode }) {
     setPlaying(PROJECTS.find((p) => p.id === id) ?? null)
   }, [])
 
-  const value = React.useMemo(() => ({ lang, setLang, t, play, lite }), [lang, setLang, t, play, lite])
+  const modalOpen = !!playing
+  const value = React.useMemo(() => ({ lang, setLang, t, play, lite, modalOpen }), [lang, setLang, t, play, lite, modalOpen])
 
   return (
     <SiteContext.Provider value={value}>
@@ -112,7 +116,7 @@ function VideoModal({
       role="dialog"
       aria-modal="true"
       aria-label={project.name}
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 backdrop-blur-xl modal-fade md:p-10"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-[#050507]/95 p-4 modal-fade md:p-10"
       onClick={onClose}
     >
       <div
@@ -133,15 +137,7 @@ function VideoModal({
           </button>
         </div>
         <div className="overflow-hidden rounded-2xl border border-white/10 bg-black shadow-[0_40px_120px_-20px_rgba(120,90,255,0.35)]">
-          <video
-            key={project.id}
-            src={project.video}
-            poster={project.poster}
-            controls
-            autoPlay
-            playsInline
-            className="aspect-video w-full"
-          />
+          <Player key={project.id} src={project.video} poster={project.poster} />
         </div>
       </div>
     </div>

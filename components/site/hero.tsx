@@ -7,6 +7,7 @@ import { LiquidButton } from "@/components/ui/liquid-glass-button"
 import { PROJECTS, UI } from "@/lib/content"
 import { useSite } from "./providers"
 import { scrollToId } from "./nav"
+import { usePreview } from "./video"
 import { cn } from "@/lib/utils"
 
 export function Hero() {
@@ -64,23 +65,22 @@ export function Hero() {
 }
 
 function Reel() {
-  const { t, play, lang, lite } = useSite()
+  const { t, play, lite, modalOpen } = useSite()
   const [i, setI] = React.useState(0)
-  const [dur, setDur] = React.useState(30)
+  const [progress, setProgress] = React.useState(0)
   const ref = React.useRef<HTMLVideoElement>(null)
   const p = PROJECTS[i]
+  usePreview(ref, { src: p.preview, enabled: !lite, paused: modalOpen })
 
-  React.useEffect(() => {
-    const v = ref.current
-    if (!v || lite) return
-    v.currentTime = 0
-    v.play().catch(() => {})
-  }, [i, lite])
+  const pick = (k: number) => {
+    setI(k)
+    setProgress(0)
+  }
 
   return (
     <div className="relative">
       <div aria-hidden className="absolute -inset-x-10 -top-10 -bottom-4 -z-10 rounded-[40px] bg-[radial-gradient(60%_60%_at_50%_40%,rgba(139,108,255,.35),transparent)] blur-2xl" />
-      <div className="overflow-hidden rounded-[22px] border border-white/10 bg-[#0d0d11]/90 p-1.5 shadow-[0_50px_140px_-30px_rgba(0,0,0,.9),inset_0_1px_0_rgba(255,255,255,.08)] backdrop-blur-xl">
+      <div className="overflow-hidden rounded-[22px] border border-white/10 bg-[#0d0d11]/90 p-1.5 shadow-[0_50px_140px_-30px_rgba(0,0,0,.9),inset_0_1px_0_rgba(255,255,255,.08)]">
         {/* window chrome */}
         <div className="flex items-center gap-3 px-3 pt-1.5 pb-2.5">
           <div className="flex gap-1.5">
@@ -92,7 +92,7 @@ function Reel() {
             {PROJECTS.map((pr, k) => (
               <button
                 key={pr.id}
-                onClick={() => setI(k)}
+                onClick={() => pick(k)}
                 className={cn(
                   "relative flex shrink-0 cursor-pointer items-center gap-2 overflow-hidden rounded-lg px-3 py-1.5 text-[12px] transition-colors",
                   k === i ? "bg-white/[0.08] text-white" : "text-white/45 hover:text-white/80",
@@ -102,10 +102,9 @@ function Reel() {
                 {pr.name}
                 {k === i && !lite && (
                   <span
-                    key={i + lang}
                     aria-hidden
-                    className="absolute inset-x-0 bottom-0 h-px origin-left"
-                    style={{ background: pr.accent, animation: `progress ${dur}s linear forwards` }}
+                    className="absolute inset-x-0 bottom-0 h-px origin-left transition-transform duration-300 ease-linear"
+                    style={{ background: pr.accent, transform: `scaleX(${progress})` }}
                   />
                 )}
               </button>
@@ -127,14 +126,13 @@ function Reel() {
             poster={p.poster}
             muted
             playsInline
-            autoPlay={!lite}
-            preload={lite ? "none" : "metadata"}
-            onLoadedMetadata={(e) => setDur(e.currentTarget.duration || 30)}
-            onEnded={() => setI((i + 1) % PROJECTS.length)}
+            preload="none"
+            onTimeUpdate={(e) => setProgress(e.currentTarget.currentTime / (e.currentTarget.duration || 30))}
+            onEnded={() => pick((i + 1) % PROJECTS.length)}
             className="h-full w-full object-cover"
           />
           <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-          <span className="absolute bottom-4 left-4 flex items-center gap-2 rounded-full bg-black/70 py-2 pr-4 pl-2.5 text-[12px] font-medium text-white opacity-0 backdrop-blur-md transition-all duration-500 group-hover:opacity-100 md:translate-y-2 md:group-hover:translate-y-0">
+          <span className="absolute bottom-4 left-4 flex items-center gap-2 rounded-full bg-black/70 py-2 pr-4 pl-2.5 text-[12px] font-medium text-white opacity-0 transition-all duration-500 group-hover:opacity-100 md:translate-y-2 md:group-hover:translate-y-0">
             <span className="grid size-6 place-items-center rounded-full bg-white text-black">
               <Play className="size-3 fill-current" />
             </span>

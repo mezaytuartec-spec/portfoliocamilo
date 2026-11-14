@@ -7,6 +7,7 @@ import { LiquidButton } from "@/components/ui/liquid-glass-button"
 import { LiquidMetalButton } from "@/components/ui/liquid-metal-button"
 import { CONTACT, PROJECTS, UI, type Project } from "@/lib/content"
 import { useSite } from "./providers"
+import { usePreview } from "./video"
 import { LangToggle, Logo, scrollToId } from "./nav"
 import { cn } from "@/lib/utils"
 
@@ -82,24 +83,10 @@ export function Work() {
 }
 
 function ProjectCase({ p }: { p: Project }) {
-  const { t, play, lite } = useSite()
+  const { t, play, lite, modalOpen } = useSite()
   const videoRef = React.useRef<HTMLVideoElement>(null)
   const [open, setOpen] = React.useState(false)
-
-  // play the muted preview only while it is on screen
-  React.useEffect(() => {
-    const v = videoRef.current
-    if (!v || lite) return
-    const io = new IntersectionObserver(
-      ([e]) => {
-        if (e.isIntersecting) v.play().catch(() => {})
-        else v.pause()
-      },
-      { threshold: 0.35 },
-    )
-    io.observe(v)
-    return () => io.disconnect()
-  }, [lite])
+  usePreview(videoRef, { src: p.preview, enabled: !lite, paused: modalOpen })
 
   return (
     <article id={`case-${p.id}`} className="relative scroll-mt-24">
@@ -132,11 +119,11 @@ function ProjectCase({ p }: { p: Project }) {
             preload="none"
             className="h-full w-full object-cover transition-transform duration-[1.4s] ease-[cubic-bezier(.2,.8,.2,1)] group-hover:scale-[1.025]"
           />
-          <span aria-hidden className="absolute bottom-3 left-3 grid size-9 place-items-center rounded-full bg-black/70 text-white backdrop-blur-md md:hidden">
+          <span aria-hidden className="absolute bottom-3 left-3 grid size-9 place-items-center rounded-full bg-black/70 text-white md:hidden">
             <Play className="size-3.5 fill-current" />
           </span>
           <span className="absolute inset-0 hidden place-items-center md:grid">
-            <span className="flex items-center gap-2.5 rounded-full bg-black/75 py-2.5 pr-5 pl-2.5 text-sm font-medium text-white opacity-0 shadow-2xl backdrop-blur-md transition-all duration-500 group-hover:scale-100 group-hover:opacity-100 md:scale-90">
+            <span className="flex items-center gap-2.5 rounded-full bg-black/75 py-2.5 pr-5 pl-2.5 text-sm font-medium text-white opacity-0 shadow-2xl transition-all duration-500 group-hover:scale-100 group-hover:opacity-100 md:scale-90">
               <span className="grid size-8 place-items-center rounded-full bg-white text-black">
                 <Play className="size-3.5 fill-current" />
               </span>
