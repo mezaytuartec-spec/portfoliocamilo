@@ -48,11 +48,8 @@ export function LiquidMetalButton({
       undefined,
       0.6,
     )
-    // pause the animation while off screen
-    const io = new IntersectionObserver(([e]) => mount.current?.setSpeed(e.isIntersecting ? 0.6 : 0))
-    io.observe(el)
+    // the shader pauses itself while off screen or in a background tab
     return () => {
-      io.disconnect()
       mount.current?.dispose()
       mount.current = null
     }

@@ -14,7 +14,7 @@ export function Hero() {
     <section id="top" className="relative isolate overflow-hidden pt-36 md:pt-44">
       {/* ambient glow + dotted desk */}
       <div aria-hidden className="dot-grid pointer-events-none absolute inset-0 -z-20 [mask-image:radial-gradient(70%_55%_at_50%_30%,black,transparent)]" />
-      <div aria-hidden className="pointer-events-none absolute top-[-20%] left-1/2 -z-20 h-[620px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(139,108,255,.20),transparent)] blur-2xl" />
+      <div aria-hidden className="pointer-events-none absolute top-[-20%] left-1/2 -z-20 h-[620px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(139,108,255,.20),transparent)]" />
 
       <div className="mx-auto max-w-5xl px-5 text-center">
         <div className="rise mx-auto inline-flex items-center gap-2.5 rounded-full py-1.5 pr-3.5 pl-2 text-[12px] text-white/70 glass">

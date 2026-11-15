@@ -25,62 +25,6 @@ function ready(v: HTMLVideoElement) {
   return b.full || (v.readyState >= 3 && b.ahead >= b.target)
 }
 
-/**
- * Muted autoplay that is always smooth: it starts downloading just before it scrolls in,
- * plays only once enough is buffered, holds still (instead of crawling) if the buffer runs
- * low, and pauses off screen or while the full player is open.
- */
-export function usePreview(
-  ref: React.RefObject<HTMLVideoElement | null>,
-  { src, enabled, paused }: { src: string; enabled: boolean; paused: boolean },
-) {
-  const state = React.useRef({ visible: false, paused })
-
-  const tryPlay = React.useCallback(() => {
-    const v = ref.current
-    const s = state.current
-    if (v && v.paused && s.visible && !s.paused && ready(v)) v.play().catch(() => {})
-  }, [ref])
-
-  React.useEffect(() => {
-    const v = ref.current
-    if (!v || !enabled) return
-    const hold = () => {
-      const b = buffer(v)
-      if (!v.paused && !b.full && b.ahead < LOW) v.pause()
-    }
-    const io = new IntersectionObserver(
-      ([e]) => {
-        state.current.visible = e.isIntersecting
-        if (!e.isIntersecting) return v.pause()
-        if (v.preload !== "auto") {
-          v.preload = "auto"
-          v.load()
-        }
-        tryPlay()
-      },
-      { rootMargin: "300px 0px" },
-    )
-    io.observe(v)
-    const events = ["progress", "canplaythrough", "loadedmetadata"] as const
-    events.forEach((ev) => v.addEventListener(ev, tryPlay))
-    v.addEventListener("timeupdate", hold)
-    v.addEventListener("waiting", hold)
-    return () => {
-      io.disconnect()
-      events.forEach((ev) => v.removeEventListener(ev, tryPlay))
-      v.removeEventListener("timeupdate", hold)
-      v.removeEventListener("waiting", hold)
-    }
-  }, [ref, src, enabled, tryPlay])
-
-  React.useEffect(() => {
-    state.current.paused = paused
-    if (paused) ref.current?.pause()
-    else tryPlay()
-  }, [paused, ref, tryPlay])
-}
-
 export function Spinner({ className, label }: { className?: string; label?: string }) {
   return (
     <span role="status" aria-label={label ?? "Loading"} className={cn("relative grid size-14 place-items-center", className)}>

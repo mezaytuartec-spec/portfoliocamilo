@@ -61,7 +61,7 @@ export function Nav() {
       <nav
         className={cn(
           "pointer-events-auto flex w-full max-w-5xl items-center justify-between gap-2 rounded-full py-1.5 pr-1.5 pl-4 transition-all duration-500",
-          scrolled ? "glass !bg-[#0b0b0f]/92 ![backdrop-filter:none]" : "border border-transparent",
+          scrolled ? "glass !bg-[#0b0b0f]/92" : "border border-transparent",
         )}
       >
         <a href="#top" className="flex items-center gap-2.5 text-sm font-medium tracking-tight">

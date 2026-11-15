@@ -2,12 +2,12 @@
 
 import * as React from "react"
 import { ArrowUpRight, ChevronDown, Play, Rocket, MousePointerClick, Smartphone, MessageCircle, Copy, Check, ArrowUp } from "lucide-react"
+import Image from "next/image"
 import { PeekBlob } from "@/components/ui/peek-blob"
 import { LiquidButton } from "@/components/ui/liquid-glass-button"
 import { LiquidMetalButton } from "@/components/ui/liquid-metal-button"
 import { CONTACT, PROJECTS, UI, type Project } from "@/lib/content"
 import { useSite } from "./providers"
-import { usePreview } from "./video"
 import { LangToggle, Logo, scrollToId } from "./nav"
 import { cn } from "@/lib/utils"
 
@@ -83,10 +83,8 @@ export function Work() {
 }
 
 function ProjectCase({ p }: { p: Project }) {
-  const { t, play, lite, modalOpen } = useSite()
-  const videoRef = React.useRef<HTMLVideoElement>(null)
+  const { t, play } = useSite()
   const [open, setOpen] = React.useState(false)
-  usePreview(videoRef, { src: p.video, enabled: !lite, paused: modalOpen })
 
   return (
     <article id={`case-${p.id}`} className="relative scroll-mt-24">
@@ -101,25 +99,25 @@ function ProjectCase({ p }: { p: Project }) {
       <div className="reveal relative mt-8" style={{ ["--d" as string]: "80ms" }}>
         <div
           aria-hidden
-          className="absolute inset-x-[8%] -bottom-10 top-[30%] -z-10 rounded-full opacity-50 blur-[90px]"
-          style={{ background: p.accent }}
+          className="absolute -inset-x-[4%] -bottom-24 top-[10%] -z-10 opacity-60"
+          style={{ background: `radial-gradient(closest-side, ${p.accent}, transparent)` }}
         />
         <button
           onClick={() => play(p.id)}
-          className="group relative block aspect-video w-full cursor-pointer overflow-hidden rounded-[22px] bg-zinc-100 ring-1 ring-white/10"
+          className="group relative block aspect-video w-full cursor-pointer overflow-hidden rounded-[22px] bg-[#111] ring-1 ring-white/10"
           aria-label={`${t(UI.work.play)} — ${p.name}`}
         >
-          <video
-            ref={videoRef}
-            src={p.video}
-            poster={p.poster}
-            muted
-            loop
-            playsInline
-            preload="none"
+          {/* still frame; the video itself only loads when it is played */}
+          <Image
+            src={p.poster}
+            alt=""
+            width={1920}
+            height={1080}
+            sizes="(min-width: 1200px) 1152px, 100vw"
+            quality={85}
             className="h-full w-full object-cover transition-transform duration-[1.4s] ease-[cubic-bezier(.2,.8,.2,1)] group-hover:scale-[1.025]"
           />
-          <span aria-hidden className="absolute bottom-3 left-3 grid size-9 place-items-center rounded-full bg-black/70 text-white md:hidden">
+          <span aria-hidden className="absolute bottom-3 left-3 grid size-9 place-items-center rounded-full bg-black/70 text-white transition-opacity duration-300 md:bottom-5 md:left-5 md:size-11 md:group-hover:opacity-0">
             <Play className="size-3.5 fill-current" />
           </span>
           <span className="absolute inset-0 hidden place-items-center md:grid">
@@ -216,8 +214,8 @@ export function Services() {
               >
                 <div
                   aria-hidden
-                  className="absolute -top-16 -right-16 size-40 rounded-full opacity-0 blur-3xl transition-opacity duration-700 group-hover:opacity-60"
-                  style={{ background: glows[k] }}
+                  className="absolute -top-24 -right-24 size-56 opacity-0 transition-opacity duration-700 group-hover:opacity-60"
+                  style={{ background: `radial-gradient(closest-side, ${glows[k]}, transparent)` }}
                 />
                 <span className="grid size-10 place-items-center rounded-xl bg-gradient-to-b from-white/15 to-white/[0.03] ring-hairline">
                   <Icon className="size-[18px] text-white/85" />
@@ -271,7 +269,7 @@ export function Contact() {
             energy={0.55}
             floor={0.08}
             edgeSoftness={4}
-            aberration={phone ? 0 : 0.3}
+            aberration={phone ? 0 : 0.25}
             ariaLabel="Camilo Meza Ytuarte"
             style={{ width: "100%", height: "100%", minHeight: 0, aspectRatio: "auto" }}
           />

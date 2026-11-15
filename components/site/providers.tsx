@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { X } from "lucide-react"
-import { GlassFilter } from "@/components/ui/liquid-glass-button"
 import { Player } from "./video"
 import { PROJECTS, UI, type Lang, type Project, type T } from "@/lib/content"
 
@@ -11,10 +10,6 @@ type Ctx = {
   setLang: (l: Lang) => void
   t: (s: T) => string
   play: (id: Project["id"]) => void
-  /** Slow connection or data saver: show posters instead of autoplaying previews. */
-  lite: boolean
-  /** True while the full player is open; previews pause so it gets the whole machine. */
-  modalOpen: boolean
 }
 
 const SiteContext = React.createContext<Ctx | null>(null)
@@ -44,16 +39,8 @@ function onLangChange(cb: () => void) {
   }
 }
 
-/* Slow connection or data saver. */
-function readLite() {
-  const c = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection
-  return !!c && (!!c.saveData || /(^|-)2g|3g/.test(c.effectiveType ?? ""))
-}
-const noop = () => () => {}
-
 export function SiteProvider({ children }: { children: React.ReactNode }) {
   const lang = React.useSyncExternalStore(onLangChange, readLang, () => "es" as Lang)
-  const lite = React.useSyncExternalStore(noop, readLite, () => false)
   const [playing, setPlaying] = React.useState<Project | null>(null)
 
   React.useEffect(() => {
@@ -75,13 +62,11 @@ export function SiteProvider({ children }: { children: React.ReactNode }) {
     setPlaying(PROJECTS.find((p) => p.id === id) ?? null)
   }, [])
 
-  const modalOpen = !!playing
-  const value = React.useMemo(() => ({ lang, setLang, t, play, lite, modalOpen }), [lang, setLang, t, play, lite, modalOpen])
+  const value = React.useMemo(() => ({ lang, setLang, t, play }), [lang, setLang, t, play])
 
   return (
     <SiteContext.Provider value={value}>
       {children}
-      <GlassFilter />
       <VideoModal project={playing} onClose={() => setPlaying(null)} label={t(UI.modal.close)} lang={lang} />
     </SiteContext.Provider>
   )

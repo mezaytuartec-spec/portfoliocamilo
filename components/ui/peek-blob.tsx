@@ -659,7 +659,7 @@ export function PeekBlob({
       const r = root.getBoundingClientRect();
       W = Math.max(1, r.width);
       H = Math.max(1, r.height);
-      dpr = Math.min(2, window.devicePixelRatio || 1) * quality;
+      dpr = Math.min(1.5, window.devicePixelRatio || 1) * quality;
       canvas.width = Math.max(1, Math.round(W * dpr));
       canvas.height = Math.max(1, Math.round(H * dpr));
       lay = layoutFor(W, H, props.current.floor);
@@ -774,7 +774,7 @@ export function PeekBlob({
         gl.uniform4f(U.uText, text.x0, text.y0, text.w, text.h);
         gl.uniform1f(U.uTextOn, text.on && textCanvas ? 1 : 0);
         const ab = clamp(p.aberration, 0, 2);
-        const n = ab <= 0.001 ? 1 : canvas.width * canvas.height > 2.4e6 ? 12 : 16;
+        const n = ab <= 0.001 ? 1 : ab < 0.5 ? 6 : canvas.width * canvas.height > 2.4e6 ? 12 : 16;
         const sp2 = spectral(n, G.caBand);
         gl.uniform2f(U.uCAc, G.caCx, G.caCy);
         gl.uniform1f(U.uCAp, G.caPow);
